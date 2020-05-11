@@ -1,23 +1,36 @@
-const questions = (state = {}, action) => {
+import {
+  SET_QUESTIONS,
+  SET_NEW_ANSWER,
+  SET_NEW_QUESTION,
+} from "../actions/questions";
+
+const questions = (questions = {}, action) => {
   switch (action.type) {
-    case "SET_QUESTIONS":
-      return { ...state, ...action.questions };
-    case "SET_NEW_ANSWER":
+    case SET_QUESTIONS:
+      return { ...questions, ...action.questions };
+    case SET_NEW_ANSWER:
       let { qid, answer } = action;
-      let newAnswArr = state[qid][answer].votes.concat(action.authedUser);
+      let newAnswArr = questions[qid][answer].votes.concat(action.authedUser);
 
       return {
-        ...state,
+        ...questions,
         [qid]: {
-          ...state[qid],
+          ...questions[qid],
           [answer]: {
-            ...state[qid][answer],
+            ...questions[qid][answer],
             votes: newAnswArr,
           },
         },
       };
+
+    case SET_NEW_QUESTION:
+      return {
+        ...questions,
+        [action.question.id]: action.question,
+      };
+
     default:
-      return state;
+      return questions;
   }
 };
 export default questions;

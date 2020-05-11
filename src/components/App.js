@@ -1,15 +1,21 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { logOutUser } from "../actions/authedUser";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //components
 import Login from "./Login";
 import Home from "./Home";
 import QuestionPage from "./QuestionPage";
 import NavBar from "./NavBar";
+import LeaderBoard from "./LeaderBoard";
+import NewQuest from "./NewQuest";
 
-const App = ({ dispatch, authedUser }) => {
+/**
+ * @description Main component
+ * @param {String} authedUser user currently signed in
+ */
+
+const App = ({ authedUser }) => {
   return (
     <Router>
       {authedUser ? (
@@ -21,7 +27,12 @@ const App = ({ dispatch, authedUser }) => {
           <Route exact path="/question/:id">
             <QuestionPage></QuestionPage>
           </Route>
-          <button onClick={() => dispatch(logOutUser())}>LOG OUT</button>
+          <Route exact path="/leaderboard">
+            <LeaderBoard></LeaderBoard>
+          </Route>
+          <Route exact path="/add">
+            <NewQuest></NewQuest>
+          </Route>
         </div>
       ) : (
         <Login></Login>

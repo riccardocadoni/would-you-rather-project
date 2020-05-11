@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 //ui
 import { Grid, Divider, Button } from "@material-ui/core";
 //components
 import Question from "./Question";
 
-const Home = ({ dispatch, authedUser, questions, users, loading }) => {
+/**
+ * @description Home Component, displays answered and unanswered questions
+ * @param {String} authedUser user currently signed in
+ * @param {Object} questions questions saved in the state
+ * @param {Object} users users saved in the state
+ * @param {Boolean} loading true during the api request
+ */
+
+const Home = ({ authedUser, questions, users, loading }) => {
   const [showAnsweredQueston, setShowAnsweredQueston] = useState(false);
 
   const getAnsweredQuestions = () => {
     return Object.keys(questions)
       .filter((quest) => Object.keys(users[authedUser].answers).includes(quest))
+      .sort((a, b) => questions[b].timestamp - questions[a].timestamp)
       .map((quest) => (
         <Grid item xs={8} align="center" key={quest}>
           <Question question={questions[quest]}></Question>
@@ -22,6 +31,7 @@ const Home = ({ dispatch, authedUser, questions, users, loading }) => {
       .filter(
         (quest) => !Object.keys(users[authedUser].answers).includes(quest)
       )
+      .sort((a, b) => questions[b].timestamp - questions[a].timestamp)
       .map((quest) => (
         <Grid item xs={8} align="center" key={quest}>
           <Question question={questions[quest]} preview={true}></Question>
@@ -29,15 +39,19 @@ const Home = ({ dispatch, authedUser, questions, users, loading }) => {
       ));
   };
 
-  const questionsArray = showAnsweredQueston
+  let questionsArray = showAnsweredQueston
     ? getAnsweredQuestions()
     : getUnansweredQuestions();
 
+  if (questionsArray.length === 0)
+    questionsArray = [
+      <Grid item xs={8} align="center" key={"all"}>
+        <h2>You answered all the questions! :)</h2>
+      </Grid>,
+    ];
+
   return (
-    <Grid container justify="center">
-      <Grid item xs={10} align="center">
-        <p>Hello {authedUser}!!</p>
-      </Grid>
+    <React.Fragment>
       <Grid container justify="center">
         <Button
           disabled={!showAnsweredQueston}
@@ -56,7 +70,7 @@ const Home = ({ dispatch, authedUser, questions, users, loading }) => {
       <Grid container justify="center">
         {loading ? <p>loading..</p> : questionsArray}
       </Grid>
-    </Grid>
+    </React.Fragment>
   );
 };
 

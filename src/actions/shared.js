@@ -1,6 +1,6 @@
 import * as DATA from "../DATA";
-import { setNewAnswer } from "./questions";
-import { setNewAnswerUser } from "./users";
+import { setNewAnswer, setNewQuestion } from "./questions";
+import { setNewAnswerUser, setNewQuestionUser } from "./users";
 
 export const saveNewAnswer = (qid, answer) => {
   return (dispatch, getState) => {
@@ -8,6 +8,15 @@ export const saveNewAnswer = (qid, answer) => {
     DATA._saveQuestionAnswer({ authedUser, qid, answer }).then(() => {
       dispatch(setNewAnswer({ authedUser, qid, answer }));
       dispatch(setNewAnswerUser({ authedUser, qid, answer }));
+    });
+  };
+};
+
+export const addNewQuestion = (question) => {
+  return (dispatch) => {
+    DATA._saveQuestion(question).then((formattedQuestion) => {
+      dispatch(setNewQuestion(formattedQuestion));
+      dispatch(setNewQuestionUser(formattedQuestion));
     });
   };
 };

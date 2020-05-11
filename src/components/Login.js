@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { getUsers } from "../actions/users";
 import { setAuthedUser } from "../actions/authedUser";
 import { getQuestions } from "../actions/questions";
 //ui
 import { Grid, Button } from "@material-ui/core";
+
+/**
+ * @description Login Component
+ * @param {Object} users users saved in the state
+ * @param {Boolean} loading true during the api request
+ */
 
 const Login = ({ dispatch, users, loading }) => {
   useEffect(() => {
@@ -30,6 +36,7 @@ const Login = ({ dispatch, users, loading }) => {
                   <div style={{ display: "flex", margin: 10 }}>
                     <img
                       src={"../" + users[user].avatarURL}
+                      alt="avatar"
                       style={{ borderRadius: "50%", height: 50, weight: 50 }}
                     ></img>
                     <Button

@@ -4,10 +4,20 @@ import { Link } from "react-router-dom";
 import { saveNewAnswer } from "../actions/shared";
 //ui
 import { Button } from "@material-ui/core";
+import StarIcon from "@material-ui/icons/Star";
+
+/**
+ * @description Home Component, displays answered and unanswered questions
+ * @param {String} authedUser user currently signed in
+ * @param {Object} question question passed from the parent component
+ * @param {Object} users users saved in the state
+ * @param {Boolean} preview true if it's displayed on the homepage, shows only a submit button
+ */
 
 const Question = ({ dispatch, question, users, authedUser, preview }) => {
   const optOneSel = question.optionOne.votes.includes(authedUser);
   const optTwoSel = question.optionTwo.votes.includes(authedUser);
+  //true if the user has answered the question
   const answered = optOneSel || optTwoSel;
   let content;
   if (preview) {
@@ -15,7 +25,9 @@ const Question = ({ dispatch, question, users, authedUser, preview }) => {
       <div>
         <p>{question.optionOne.text + "..."}</p>
         <Link to={"/question/" + question.id}>
-          <Button size="large">Submit</Button>
+          <Button size="large" variant="contained" color="primary">
+            Submit
+          </Button>
         </Link>
       </div>
     );
@@ -25,34 +37,58 @@ const Question = ({ dispatch, question, users, authedUser, preview }) => {
         <div
           style={{
             flexDirection: "column",
+            boxShadow: "0px 2px 1px -1px rgba(0 , 0 , 0 , 0.2)",
+            margin: 10,
           }}
         >
           <p>{question.optionOne.text}</p>
           <p>{getStats(question).statOne}</p>
-          {optOneSel && <p>Your choice</p>}
+          {optOneSel && <StarIcon></StarIcon>}
         </div>
-        <div style={{ flexDirection: "column" }}>
+        <div
+          style={{
+            flexDirection: "column",
+            boxShadow: "0px 2px 1px -1px rgba(0 , 0 , 0 , 0.2)",
+            margin: 10,
+          }}
+        >
           <p>{question.optionTwo.text}</p>
           <p>{getStats(question).statTwo}</p>
-          {optTwoSel && <p>Your choice</p>}
+          {optTwoSel && <StarIcon></StarIcon>}
         </div>
       </>
     );
   } else {
     content = (
       <>
-        <Button
-          size="small"
-          onClick={() => dispatch(saveNewAnswer(question.id, "optionOne"))}
+        <div
+          style={{
+            margin: 10,
+          }}
         >
-          {question.optionOne.text}
-        </Button>
-        <Button
-          size="small"
-          onClick={() => dispatch(saveNewAnswer(question.id, "optionTwo"))}
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => dispatch(saveNewAnswer(question.id, "optionOne"))}
+          >
+            {question.optionOne.text}
+          </Button>
+        </div>
+        <div
+          style={{
+            margin: 10,
+          }}
         >
-          {question.optionTwo.text}
-        </Button>
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => dispatch(saveNewAnswer(question.id, "optionTwo"))}
+          >
+            {question.optionTwo.text}
+          </Button>
+        </div>
       </>
     );
   }
@@ -70,6 +106,7 @@ const Question = ({ dispatch, question, users, authedUser, preview }) => {
       <div style={{ display: "flex", margin: 10, alignItems: "center" }}>
         <img
           src={"../" + users[question.author].avatarURL}
+          alt="avatar"
           style={{ borderRadius: "50%", height: 50, weight: 50, margin: 10 }}
         ></img>
         <p>{question.author + " asks:"}</p>
